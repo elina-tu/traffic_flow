@@ -2,27 +2,31 @@ import numpy as np
 from numpy.random import default_rng
 import flow_functions as ff
 
-road_lenght = 10 #number of cells
-density = 0.5 #num_cars/num_cells
-num_cars = int(density*road_lenght) #number of cacrs
+road_length = 10 #number of cells
+density = 0.4 #num_cars/num_cells
+num_cars = int(density*road_length) #number of cacrs
 v_max = 5 #maximum velocity
 time = 10
 
 #craete an empty road
-road = np.empty(road_lenght)
+road = np.empty(road_length)
 road[:] = np.NaN
 
 #populate the road
 rng = default_rng()
-cars = rng.choice(road_lenght, size=num_cars, replace=False)
-cars = np.sort(cars)
+position = rng.choice(road_length, size=num_cars, replace=False)
+position = np.sort(position)
 velocity = np.random.random_integers(0, v_max, size=num_cars)
 #test data
-cars = np.array([1, 6])
-velocity = np.array([2, 1])
+#position = np.array([1, 4])
+#velocity = np.array([2, 1])
 
-road[np.array(cars)] = velocity
+road[np.array(position)] = velocity
+
+print('road: {}'.format(road))
 
 for i in range(time):
-    road, cars = ff.position_update(road, cars, velocity, road_lenght)
-    print(road)
+    velocity = ff.speed_update(position, velocity, v_max, road_length)
+    road, position = ff.position_update(road, position, velocity, road_length)
+
+    print('road: {}'.format(road))
