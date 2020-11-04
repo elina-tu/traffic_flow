@@ -1,12 +1,13 @@
 import numpy as np
 from numpy.random import default_rng
 import flow_functions as ff
+import matplotlib.pyplot as plt
 
-road_length = 10 #number of cells
-density = 0.4 #num_cars/num_cells
+road_length = 20 #number of cells
+density = 0.2 #num_cars/num_cells
 num_cars = int(density*road_length) #number of cacrs
 v_max = 5 #maximum velocity
-time = 10
+time = 20
 
 #craete an empty road
 road = np.empty(road_length)
@@ -21,12 +22,37 @@ velocity = np.random.random_integers(0, v_max, size=num_cars)
 #position = np.array([1, 4])
 #velocity = np.array([2, 1])
 
+#velocity of the car in corresponding position
 road[np.array(position)] = velocity
 
-print('road: {}'.format(road))
+#velocity array
+velocity_arr = np.empty(num_cars*(time + 1))
+velocity_arr[:num_cars] = velocity
+#position array
+position_arr = np.empty(num_cars*(time + 1))
+position_arr[:num_cars] = position
+#time array
+time_arr = np.empty(num_cars*(time + 1))
+time_arr[:num_cars] = np.zeros(num_cars)
 
+#main loop moving cars
 for i in range(time):
     velocity = ff.speed_update(position, velocity, v_max, road_length)
     road, position = ff.position_update(road, position, velocity, road_length)
 
-    print('road: {}'.format(road))
+    #storing values to plot
+    velocity_arr[(i+1)*num_cars:(i+2)*num_cars] = velocity
+    position_arr[(i+1)*num_cars:(i+2)*num_cars] = position
+    time_arr[(i+1)*num_cars:(i+2)*num_cars] = (i+1)*np.ones(num_cars)
+
+#plotting traffic
+fig, ax = plt.subplots()
+
+plt.scatter(position_arr, time_arr, c=velocity_arr)
+
+ax.set_ylim(time + 1, -1)
+plt.xlabel('Position')
+plt.ylabel('Time')
+plt.title('Simulated traffic without randomisation')
+
+plt.show()
