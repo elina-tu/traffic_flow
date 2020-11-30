@@ -1,6 +1,6 @@
 import numpy as np
 
-def position_update(road, position, velocity, road_length):
+def position_update(position, velocity, road_length):
     '''function that updates position with accordance to velocity
     also creates road array that has values of velocities in corresponding position'''
 
